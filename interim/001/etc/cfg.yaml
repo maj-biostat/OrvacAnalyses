@@ -1,0 +1,77 @@
+---
+# NOTE
+# 1. Final blank line required
+# 2. Never __EVER__ use TAB characters
+
+id_sim: 1
+
+print_cfg: 0
+print_intrm: 0
+
+
+n_sims: 3
+seed: 1
+
+# interims
+# first look is always 50 thereafter n increases based on people_per_interim_period 
+n_start: 70
+n_stop: 1000
+
+int_mnth: 3
+int_n: 50
+
+# controls the accrual rate (people per month) 
+accrual:  10
+
+sero_info_delay: 0
+# max number of venous samp
+n_max_sero: 250
+# n when we start assessing the clinical endpoint
+n_start_clin: 200
+
+# data generation
+age_months_lwr: 6
+age_months_upr: 12
+max_age_fu: 36 
+  
+# seroconversion control variables
+baseline_prob_sero: 0.4
+trt_prob_sero: 0.6
+
+prior_beta_a: 1
+prior_beta_b: 1
+
+# for significance testing of a win in the pp section
+
+# time to event control variables
+# exponential
+# rates obtained from formula for med surv time (which are in months)
+# control log(2)/25 
+# treatment log(2)/30 - log(2)/25 
+# log(2)/25  = 0.027773
+# log(2)/30  = 0.023105
+
+# note - interp of survreg is fuckt 
+# see https://www.ms.uky.edu/~mai/Rsurv.pdf (top of page 4)
+# coefs aka. mu are related to rate via
+# mu = log(1/rate) 
+# i.e. rate = 1/exp(mu)
+
+ctl_med_tte: 30
+trt_med_tte: 35
+
+prior_gamma_a: 1
+prior_gamma_b: 40
+
+
+thresh_pp_fut: 0.05
+thresh_pp_es: 0.96
+thresh_p_sup: 0.96
+thresh_p_fut: 0.05
+
+# conjugate posterior
+post_draw: 5000
+
+
+
+# R Bug - Terminating Line Required - Do not remove
