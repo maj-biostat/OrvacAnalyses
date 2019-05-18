@@ -3,17 +3,11 @@ data {
   int<lower=1,upper=250> N_pred;
 
   int y[N];                         // response variable
-  int <lower=1>K;
-  matrix[N, K] X;                 // design matrix for trt, 0 = ctl 1 = trt
+  int <lower=1>K;                    // num predictors excluding intercept
+  matrix[N, K] X;                 // design matrix for trt, -0.5 = ctl 0.5 = trt
   matrix[N_pred, K] X_new;    // design matrix for future predictions
   
   
-}
-transformed data {
-    //vector[N] age_sq;              // create new variable (4), age 
-                                  // squared (no dots in the variable name)
-  //age_sq <- age .* age;          // formula for the variable, do not 
-                                // forget the . before multiplication
 }
 parameters {
   real alpha;
@@ -30,7 +24,7 @@ model {
 
   // priors including all constants
   target += student_t_lpdf(alpha | 3, 0, 2.5);// intercept 
-  target += student_t_lpdf(b | 3, 0, 2.5);
+  target += student_t_lpdf(b | 7, 0, 2.5);
   
   // likelihood including all constants
   target += bernoulli_logit_lpmf(y | eta);

@@ -17,7 +17,14 @@ interim.
 The first interim primarily involves a logistic regression to assess for 
 stopping venous sampling or futility.
 
+## Instructions
 
+Open the project in Rstudio. Alternatively, invoke R from the project 
+directory. To run the analyses, do:
+
+```
+source("interim/001/R/main.R")
+```
 
 
 

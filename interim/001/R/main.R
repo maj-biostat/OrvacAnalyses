@@ -73,15 +73,22 @@ main <- function(){
   # only have 70 observations
   N <- cfg$n_start
   d <- d[1:N,]
+  
+  # centre covariates
+  X <- array(d$trt, dim = c(cfg$n_start, 1)) 
+  Xc <- X - mean(array(d$trt, dim = c(cfg$n_start, 1)))
+  
+  X_new <- array(rep(0:1, len = cfg$n_max_sero - cfg$n_start), 
+                dim = c(cfg$n_max_sero-nrow(d), 1))
+  Xc_new <- X_new - mean(X_new)
 
   ld <- list(
     N = cfg$n_start,
     N_pred = cfg$n_max_sero - cfg$n_start,
     K = 1,
-    X = array(d$trt, dim = c(cfg$n_start, 1)),
+    X = X,
     # pass X_new in but only used if predict is T
-    X_new = array(rep(0:1, len = cfg$n_max_sero - cfg$n_start), 
-                  dim = c(cfg$n_max_sero-nrow(d), 1)),
+    X_new = X_new,
     y = d$serot3
   )
 
@@ -92,18 +99,21 @@ main <- function(){
   fit <- rstan::sampling(object  = mod,
                          data    = ld,
                          chains  = 1,
-                         iter    = 10000 
-                         )
+                         iter    = 10000,
+                         refresh = 10000)
   
+  print(fit, pars = "b", digits_summary = 3)
   
+  # check chains etcs
   # report odds ratio and probabilities - 
   # compute prob and diff in generated data block
-  
+  # 
   
   # assess futility
   res <- rstan::extract(fit)
   y_rep <- res$y_rep
   trtnew <- c(d$trt, rep(0:1, len = cfg$n_max_sero - cfg$n_start))
+  trtnewc <- trtnew - mean(trtnew)
   table(trtnew)
   dim(y_rep)
   
@@ -137,6 +147,7 @@ main <- function(){
   
   futile <- mean(win) < cfg$thresh_p_fut
   
+  message("# Results")
   message(paste0("Of the ", nsim, " simulations, there were ", sum(win),
                  " trials where the probability of a",
                  " treatment effect was > ", cfg$thresh_p_sup, "."))
